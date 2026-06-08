@@ -1,60 +1,261 @@
-# ImpactLedger Template
+## Phase 5 — README
 
-## Sobre o desafio
-Template oficial do desafio ImpactLedger do Hackathon Web3 RESTIC 29.
+Create `README.md` in the project root:
 
-## Objetivo
-Construir uma solução baseada em blockchain capaz de registrar, validar e certificar ações de impacto social e ambiental.
+```markdown
+# GreenChain
 
-## Exemplos de aplicação
-- Certificação de voluntariado
-- NFTs comunitários
-- Registro de impacto ESG
-- Dashboard auditável
-- Plataforma de doações
-- Sistema de reciclagem
+> Verified recycling actions, permanently recorded on the blockchain.
 
-## Tecnologias sugeridas
-- Solidity
-- Hardhat
-- Sepolia
-- Polygon Mumbai
-- OpenZeppelin
-- IPFS
-- Ethers.js
-- React
+GreenChain is a blockchain-based platform that transforms recycling actions into verifiable, auditable, and transparent records. Every discard action is registered on-chain, linked to photographic evidence stored on IPFS, and certified with a Soulbound Token (SBT) — creating a chain of custody that citizens, operators, companies, and the public can trust.
 
-## Estrutura
-/contracts
-/frontend
-/scripts
-/test
-/docs
+Built for the **ImpactLedger** challenge at **Hackweb 2025**.
 
-## Como executar
+---
 
-### Instalar dependências
+## The problem
+
+Recycling initiatives in Brazil and worldwide suffer from a fundamental trust gap. Cooperatives, municipalities, and ESG-driven companies have no reliable way to prove that recycling actually happened. Records are kept in spreadsheets, photos are stored locally, and validations are informal.
+
+This means:
+- Citizens receive no verifiable proof of their actions
+- Companies cannot audit recycling claims for ESG reporting
+- Cooperatives cannot prove volume to attract larger contracts
+- There is no shared layer of trust between all parties
+
+## The solution
+
+GreenChain introduces a shared, tamper-proof record layer using Ethereum smart contracts and IPFS:
+
+- **Operators** (cooperatives, collection points) register discard actions on-chain with photographic evidence
+- **Citizens** automatically receive a Soulbound Token as a non-transferable certificate of participation
+- **Anyone** can audit the full history of actions via the public dashboard, with every record linking back to its Etherscan transaction and IPFS evidence
+
+---
+
+## Architecture
+
+### What goes on-chain
+- Operator address
+- Citizen address
+- Waste category (Plastic, Paper, Metal, Glass, Organic)
+- Estimated weight (kg)
+- IPFS CID of the evidence metadata
+- Timestamp
+
+### What goes off-chain (IPFS via Pinata)
+- Evidence photo
+- Full metadata JSON: citizen, operator, category, weight, location, photo CID, timestamp
+
+### Why this split
+Storing large files on-chain is prohibitively expensive. The CID stored on-chain is a cryptographic hash of the off-chain content — if anyone tampers with the IPFS file, the CID no longer matches, making tampering detectable.
+
+### Contracts
+| Contract | Address | Etherscan |
+|---|---|---|
+| GreenRegistry | `0x7832Eee24EB47af4347825231FE6135d9fe29815` | [View](https://sepolia.etherscan.io/address/0x7832Eee24EB47af4347825231FE6135d9fe29815#code) |
+| GreenSBT | `0xA55Dbd05D330018E2B600236031Fb5b46758c27c` | [View](https://sepolia.etherscan.io/address/0xA55Dbd05D330018E2B600236031Fb5b46758c27c#code) |
+
+Both contracts are verified and open-source on Etherscan Sepolia.
+
+### Tech stack
+| Layer | Technology |
+|---|---|
+| Smart contracts | Solidity 0.8.20 + OpenZeppelin 4.9.6 |
+| Contract tooling | Hardhat 2 + hardhat-toolbox |
+| Soulbound tokens | ERC-721 + ERC-5192 |
+| Evidence storage | IPFS via Pinata |
+| Frontend | Next.js + Ethers.js v6 |
+| Network | Ethereum Sepolia Testnet |
+
+---
+
+## Flow
+
+```
+Citizen presents wallet address at collection point
+        ↓
+Operator fills form: category, weight, location, photo
+        ↓
+Photo uploaded to IPFS → metadata JSON uploaded to IPFS → CID returned
+        ↓
+registerDiscard() called on GreenRegistry contract
+        ↓
+Action stored on-chain (operator, citizen, category, weight, CID, timestamp)
+        ↓
+GreenSBT.mint() called automatically → SBT issued to citizen wallet
+        ↓
+DiscardRegistered event emitted → visible on dashboard
+```
+
+---
+
+## Smart contracts
+
+### GreenRegistry.sol
+The core contract. Manages authorized operators and stores discard actions.
+
+Key functions:
+- `registerDiscard(citizen, category, weightKg, ipfsCid)` — registers an action and triggers SBT mint. Only callable by authorized operators.
+- `getDiscard(id)` — returns full details of a discard action by ID
+- `getDiscardsByCitizen(address)` — returns all discard IDs for a given citizen
+- `addOperator(address)` / `removeOperator(address)` — operator management, owner only
+
+### GreenSBT.sol
+ERC-721 token with ERC-5192 soulbound implementation. Tokens are permanently non-transferable.
+
+Key functions:
+- `mint(to, discardId)` — mints a certificate. Only callable by GreenRegistry.
+- `locked(tokenId)` — always returns `true` per ERC-5192
+- `getTokensByCitizen(address)` — returns all token IDs for a citizen
+- `transferFrom` / `safeTransferFrom` / `approve` — all revert with explicit soulbound error
+
+---
+
+## How to run locally
+
+### Prerequisites
+- Node.js 18 or 20 (note: Node 25 works but generates warnings with Hardhat 2)
+- MetaMask browser extension
+- Sepolia testnet ETH (available from [sepoliafaucet.com](https://sepoliafaucet.com))
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/<your-username>/greenchain
+cd greenchain
+```
+
+### 2. Install contract dependencies
 ```bash
 npm install
 ```
 
-### Compilar contratos
-```bash
-npx hardhat compile
+### 3. Set up environment variables
+Create a `.env` file in the project root:
+```
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/your-alchemy-key
+PRIVATE_KEY=your-wallet-private-key
+ETHERSCAN_API_KEY=your-etherscan-api-key
 ```
 
-### Deploy
+### 4. Run contract tests
 ```bash
-npx hardhat run scripts/deploy.js --network sepolia
+npx hardhat test
 ```
 
-## Requisitos mínimos
-- Uso de blockchain
-- Registro auditável
-- Smart contract funcional
-- Histórico verificável
-- README funcional
-- Vídeo-pitch
+All 12 tests should pass.
 
-## Equipe
-Adicionar integrantes aqui.
+### 5. Install frontend dependencies
+```bash
+cd frontend
+npm install
+```
+
+### 6. Set up frontend environment variables
+Create `frontend/.env.local`:
+```
+PINATA_JWT=your-pinata-jwt
+NEXT_PUBLIC_PINATA_GATEWAY=https://gateway.pinata.cloud
+NEXT_PUBLIC_SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/your-alchemy-key
+```
+
+### 7. Run the frontend
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Pages
+
+| Page | URL | Description |
+|---|---|---|
+| Home | `/` | Landing page with project overview |
+| Register | `/register` | Operator registers a discard action |
+| My Certificates | `/certificates` | Citizen views their recycling history and SBTs |
+| Dashboard | `/dashboard` | Public audit log with metrics and search |
+
+---
+
+## Audit trail
+
+Every action registered on GreenChain can be independently verified by anyone:
+
+1. Find the action on the [dashboard](http://localhost:3000/dashboard)
+2. Click "Etherscan →" to see the on-chain transaction
+3. Open the "Logs" tab on Etherscan to see the `DiscardRegistered` event and all indexed fields
+4. Copy the `ipfsCid` from the event data
+5. Open `https://gateway.pinata.cloud/ipfs/<cid>` to see the full metadata JSON
+6. Copy `photo.cid` from the JSON
+7. Open `https://gateway.pinata.cloud/ipfs/<photo-cid>` to see the original evidence photo
+
+This chain — **transaction → event → metadata CID → photo CID** — is tamper-evident. The CID is a cryptographic hash of the content; any modification to the file would produce a different CID that no longer matches the on-chain record.
+
+---
+
+## Example audit
+
+| Field | Value |
+|---|---|
+| Contract | `0x7832Eee24EB47af4347825231FE6135d9fe29815` |
+| Network | Ethereum Sepolia Testnet |
+| Etherscan | [View contract](https://sepolia.etherscan.io/address/0x7832Eee24EB47af4347825231FE6135d9fe29815) |
+
+---
+
+## Project structure
+
+```
+greenchain/
+├── contracts/
+│   ├── GreenRegistry.sol     ← core registry contract
+│   └── GreenSBT.sol          ← soulbound token contract
+├── scripts/
+│   └── deploy.cjs            ← deployment script
+├── test/
+│   └── GreenChain.cjs        ← 12 unit tests
+├── hardhat.config.cjs
+├── frontend/
+│   ├── lib/
+│   │   ├── contracts.js      ← ABIs and addresses
+│   │   ├── useWallet.js      ← MetaMask connection hook
+│   │   ├── pinata.js         ← Pinata client
+│   │   ├── uploadEvidence.js ← server-side upload logic
+│   │   └── uploadClient.js   ← browser-side upload helper
+│   ├── pages/
+│   │   ├── index.js          ← landing page
+│   │   ├── register.js       ← operator registration screen
+│   │   ├── certificates.js   ← citizen wallet screen
+│   │   ├── dashboard.js      ← public dashboard
+│   │   └── api/
+│   │       └── upload.js     ← IPFS upload API route
+│   └── styles/
+└── README.md
+```
+
+---
+
+## What is not included
+
+Per the challenge scope, the following are intentionally out of scope for this MVP:
+
+- Tokens with real financial value
+- Mobile application
+- Production deployment
+- Integration with public registries or government databases
+- Professional smart contract audit
+
+---
+
+## Team
+
+Built for the ImpactLedger challenge at Hackweb 2025.
+
+---
+
+## License
+
+MIT
+```
