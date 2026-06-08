@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWallet } from "../lib/useWallet";
 import { REGISTRY_ADDRESS, REGISTRY_ABI, SBT_ADDRESS, SBT_ABI, WASTE_CATEGORIES } from "../lib/contracts";
 import styles from "../styles/Certificates.module.css";
+import WalletConnect from "../components/WalletConnect";
 
 export default function Wallet() {
   const { address, signer, error: walletError, loading: walletLoading, connect } = useWallet();
@@ -82,12 +83,11 @@ export default function Wallet() {
   if (!address) {
     return (
       <div className="page-container page-container--medium">
-        <h1 className="page-title">My Certificates</h1>
-        <p className="page-subtitle">Connect your wallet to see your recycling history.</p>
-        <button className="btn btn-primary btn-primary--lg" onClick={connect} disabled={walletLoading}>
-          {walletLoading ? "Connecting..." : "Connect MetaMask"}
-        </button>
-        {walletError && <p className="alert-error">{walletError}</p>}
+        <WalletConnect
+          title="My Certificates"
+          subtitle="Connect your wallet to see your recycling history."
+          buttonSize="lg"
+        />
       </div>
     );
   }

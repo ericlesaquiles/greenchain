@@ -69,6 +69,16 @@ html {
 
 /* ── Layout ─────────────────────────────────────────────────────────────── */
 
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-content {
+  flex: 1 0 auto;
+}
+
 .page-container {
   margin: 60px auto;
   padding: 0 24px;
@@ -188,6 +198,11 @@ html {
 .btn-primary--lg {
   padding: 12px 24px;
   font-size: 16px;
+}
+
+.btn-primary--md {
+  padding: 10px 20px;
+  font-size: 15px;
 }
 
 .btn-primary--full {
@@ -330,7 +345,26 @@ html {
 }
 
 .nav-link {
-  color: var(--gc-green);
+  color: var(--gc-text-muted);
   text-decoration: none;
   font-weight: 600;
+  transition: color 0.2s ease;
 }
+
+.nav-link:hover {
+  color: var(--gc-green-light);
+}
+
+.nav-link--active {
+  color: var(--gc-green);
+}
+
+.footer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--gc-text-dim);
+  padding: 40px 0;
+  border-top: 1px solid var(--gc-border-subtle);
+  margin-top: 60px;
+}
+

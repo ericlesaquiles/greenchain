@@ -150,10 +150,6 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.footer}>
-        Built for ImpactLedger · Hackweb 2025 · Ethereum Sepolia Testnet
-      </div>
-
     </div>
   );
 }

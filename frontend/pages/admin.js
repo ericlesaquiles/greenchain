@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useWallet } from "../lib/useWallet";
 import { REGISTRY_ADDRESS, REGISTRY_ABI } from "../lib/contracts";
 import styles from "../styles/Admin.module.css";
+import WalletConnect from "../components/WalletConnect";
 
 
 export default function Admin() {
@@ -126,12 +127,11 @@ export default function Admin() {
   if (!address) {
     return (
       <div className="page-container page-container--admin">
-        <h1 className="page-title">Admin</h1>
-        <p className="page-subtitle">Connect your wallet to access the admin panel.</p>
-        <button className={`btn btn-primary ${styles.btn}`} onClick={connect} disabled={walletLoading}>
-          {walletLoading ? "Connecting..." : "Connect MetaMask"}
-        </button>
-        {walletError && <p className="alert-error">{walletError}</p>}
+        <WalletConnect
+          title="Admin"
+          subtitle="Connect your wallet to access the admin panel."
+          buttonSize="md"
+        />
       </div>
     );
   }

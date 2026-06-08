@@ -5,6 +5,7 @@ import { uploadEvidenceClient } from "../lib/uploadClient";
 import { validateImage } from "../lib/validateImage";
 import { REGISTRY_ADDRESS, REGISTRY_ABI, WASTE_CATEGORIES } from "../lib/contracts";
 import styles from "../styles/Register.module.css";
+import WalletConnect from "../components/WalletConnect";
 
 export default function Register() {
   const { address, signer, error: walletError, loading: walletLoading, connect } = useWallet();
@@ -95,13 +96,10 @@ export default function Register() {
 
       {/* ── Not connected ── */}
       {!address && (
-        <div>
-          <p className="page-subtitle">Connect your wallet to register a discard action.</p>
-          <button className="btn btn-primary btn-primary--full" onClick={connect} disabled={walletLoading}>
-            {walletLoading ? "Connecting..." : "Connect MetaMask"}
-          </button>
-          {walletError && <p className="alert-error">{walletError}</p>}
-        </div>
+        <WalletConnect
+          subtitle="Connect your wallet to register a discard action."
+          buttonSize="full"
+        />
       )}
 
       {/* ── Checking operator ── */}
