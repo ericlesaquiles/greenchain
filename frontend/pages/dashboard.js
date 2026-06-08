@@ -39,14 +39,31 @@ export default function Dashboard() {
       const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
 
       const latestBlock = await provider.getBlockNumber();
-      const CHUNK_SIZE = 9; // stay within Alchemy free tier limit of 10
       const filter = registry.filters.DiscardRegistered();
 
       let allEvents = [];
-      for (let from = DEPLOY_BLOCK; from <= latestBlock; from += CHUNK_SIZE) {
-        const to = Math.min(from + CHUNK_SIZE - 1, latestBlock);
-        const events = await registry.queryFilter(filter, from, to);
-        allEvents = allEvents.concat(events);
+      try {
+        // Try querying with large chunks (50k blocks) on the primary RPC
+        const CHUNK_SIZE = 50000;
+        for (let from = DEPLOY_BLOCK; from <= latestBlock; from += CHUNK_SIZE) {
+          const to = Math.min(from + CHUNK_SIZE - 1, latestBlock);
+          const events = await registry.queryFilter(filter, from, to);
+          allEvents = allEvents.concat(events);
+        }
+      } catch (rpcErr) {
+        console.warn("Primary RPC log query failed, trying public fallback RPC:", rpcErr.message);
+
+        // Fallback to a public Sepolia node which permits up to 50k block range requests
+        const fallbackProvider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com");
+        const fallbackRegistry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, fallbackProvider);
+
+        allEvents = [];
+        const CHUNK_SIZE = 50000;
+        for (let from = DEPLOY_BLOCK; from <= latestBlock; from += CHUNK_SIZE) {
+          const to = Math.min(from + CHUNK_SIZE - 1, latestBlock);
+          const events = await fallbackRegistry.queryFilter(filter, from, to);
+          allEvents = allEvents.concat(events);
+        }
       }
 
       const parsed = allEvents.map((e) => ({
