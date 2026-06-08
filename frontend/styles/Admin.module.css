@@ -1,0 +1,60 @@
+.section {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--gc-text-heading);
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.btnDisabled {
+  padding: 10px 20px;
+  background: var(--gc-green-dark);
+  color: var(--gc-green-light);
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: not-allowed;
+}
+
+.operatorList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.operatorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--gc-surface);
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius);
+  gap: 16px;
+}
+
+.removeBtn {
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--gc-error-text);
+  border: 1px solid var(--gc-error-border);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

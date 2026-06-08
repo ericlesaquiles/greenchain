@@ -17,6 +17,9 @@ export default function App({ Component, pageProps }) {
         <Link href="/dashboard" className="nav-link">
           Dashboard
         </Link>
+        <Link href="/admin" className="nav-link">
+          Admin
+        </Link>
       </nav>
       <Component {...pageProps} />
     </>

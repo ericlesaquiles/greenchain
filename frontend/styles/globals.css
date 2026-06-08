@@ -79,6 +79,7 @@ html {
 .page-container--narrow { max-width: 560px; }
 .page-container--medium { max-width: 600px; }
 .page-container--wide { max-width: 900px; }
+.page-container--admin { max-width: 680px; }
 
 .page-container--home {
   max-width: 860px;
@@ -136,6 +137,16 @@ html {
   padding: 10px 12px;
   border-radius: var(--gc-radius);
   border: 1px solid var(--gc-error-border);
+  margin-bottom: 16px;
+}
+
+.alert-success {
+  color: var(--gc-green-light);
+  font-size: 14px;
+  background: var(--gc-green-bg);
+  padding: 10px 12px;
+  border-radius: var(--gc-radius);
+  border: 1px solid var(--gc-green-border);
   margin-bottom: 16px;
 }
 

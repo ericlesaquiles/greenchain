@@ -5,9 +5,14 @@ export const DEPLOY_BLOCK = 10957681
 export const REGISTRY_ABI = [
   "function registerDiscard(address citizen, uint8 category, uint16 weightKg, string calldata ipfsCid) external returns (uint256)",
   "function operators(address) external view returns (bool)",
+  "function owner() external view returns (address)",
   "function getDiscard(uint256 id) external view returns (tuple(address operator, address citizen, uint8 category, uint16 weightKg, string ipfsCid, uint256 timestamp))",
   "function getDiscardsByCitizen(address citizen) external view returns (uint256[])",
   "function discardCount() external view returns (uint256)",
+  "function addOperator(address operator) external",
+  "function removeOperator(address operator) external",
+  "event OperatorAdded(address indexed operator)",
+  "event OperatorRemoved(address indexed operator)",
   "event DiscardRegistered(uint256 indexed id, address indexed operator, address indexed citizen, uint8 category, uint16 weightKg, string ipfsCid, uint256 timestamp)",
 ];
 
