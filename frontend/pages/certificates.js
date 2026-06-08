@@ -179,6 +179,12 @@ export default function Wallet() {
               </div>
             </div>
             <div className={styles.cardFooter}>
+               <a
+                 className="link link--md"
+                 href={`/certificate/${cert.tokenId}`}
+               >
+                 View certificate page →
+               </a>
               {cert.photoUrl && (
                 <a
                   className="link link--md"
