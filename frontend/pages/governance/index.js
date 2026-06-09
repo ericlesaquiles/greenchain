@@ -12,11 +12,11 @@ import s from "../../styles/Governance.module.css";
 const SEPOLIA_RPC = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL;
 
 const STATE_COLORS = {
-  Active:       { bg: "#052e16", border: "#166534", text: "#86efac" },
-  Passed:       { bg: "#1e3a5f", border: "#1d4ed8", text: "#93c5fd" },
-  Rejected:     { bg: "#450a0a", border: "#991b1b", text: "#fca5a5" },
-  Executed:     { bg: "#2e1065", border: "#7c3aed", text: "#c4b5fd" },
-  Acknowledged: { bg: "#1c1917", border: "#78716c", text: "#d6d3d1" },
+  Active:       { bg: "#f0fdf4", border: "#bbf7d0", text: "#15803d" },
+  Passed:       { bg: "#eff6ff", border: "#bfdbfe", text: "#1d4ed8" },
+  Rejected:     { bg: "#fef2f2", border: "#fecaca", text: "#dc2626" },
+  Executed:     { bg: "#f5f3ff", border: "#ddd6fe", text: "#7c3aed" },
+  Acknowledged: { bg: "#f9fafb", border: "#e5e7eb", text: "#4b5563" },
 };
 
 export default function Governance() {

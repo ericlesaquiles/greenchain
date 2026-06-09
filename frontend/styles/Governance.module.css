@@ -150,7 +150,7 @@
 .tabActive {
   composes: tab;
   background: var(--gc-green-bg);
-  color: var(--gc-green-light);
+  color: var(--gc-green);
   border-color: var(--gc-green-border);
   font-weight: 600;
 }
@@ -230,7 +230,7 @@
 
 .proposalId {
   font-size: 13px;
-  color: #555;
+  color: var(--gc-text-dim);
 }
 
 .cardBody {
@@ -293,7 +293,7 @@
 
 .metaItem {
   font-size: 12px;
-  color: #666;
+  color: var(--gc-text-dim);
 }
 
 /* ── Vote bar ──────────────────────────────────────────────────────────────── */
@@ -354,7 +354,7 @@
   flex: 1;
   padding: 10px;
   background: var(--gc-error-bg);
-  color: #fca5a5;
+  color: var(--gc-error-text);
   border: 1px solid var(--gc-error-border);
   border-radius: var(--gc-radius);
   font-size: 14px;
@@ -365,8 +365,8 @@
 .voteBtnDisabled {
   flex: 1;
   padding: 10px;
-  background: var(--gc-surface);
-  color: #555;
+  background: var(--gc-surface-code);
+  color: var(--gc-text-dim);
   border: 1px solid var(--gc-border);
   border-radius: var(--gc-radius);
   font-size: 14px;
@@ -376,9 +376,9 @@
 .executeBtn {
   flex: 1;
   padding: 10px;
-  background: #1e3a5f;
-  color: #93c5fd;
-  border: 1px solid #1d4ed8;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
   border-radius: var(--gc-radius);
   font-size: 14px;
   font-weight: 600;
@@ -428,7 +428,7 @@
 
 .hint {
   font-size: 13px;
-  color: #666;
+  color: var(--gc-text-dim);
   margin: 0;
 }
 
@@ -465,7 +465,7 @@
 .typeActive {
   padding: 10px 20px;
   background: var(--gc-green-bg);
-  color: var(--gc-green-light);
+  color: var(--gc-green);
   border: 1px solid var(--gc-green-border);
   border-radius: var(--gc-radius);
   font-size: 14px;
@@ -476,7 +476,7 @@
 .typeActiveRed {
   padding: 10px 20px;
   background: var(--gc-error-bg);
-  color: #fca5a5;
+  color: var(--gc-error-text);
   border: 1px solid var(--gc-error-border);
   border-radius: var(--gc-radius);
   font-size: 14px;
@@ -539,7 +539,7 @@
 
 .successText {
   font-size: 15px;
-  color: var(--gc-green-light);
+  color: var(--gc-green);
   margin: 0;
 }
 

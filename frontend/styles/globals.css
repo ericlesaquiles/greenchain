@@ -1,41 +1,41 @@
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #f2f5f2;
+  --foreground: #1a1f1a;
 
-  /* GreenChain design tokens */
-  --gc-text: #f0f0f0;
-  --gc-text-muted: #aaa;
-  --gc-text-dim: #888;
-  --gc-text-soft: #ccc;
-  --gc-text-heading: #e0e0e0;
-  --gc-surface: #1a1a1a;
-  --gc-surface-raised: #111;
-  --gc-surface-alt: #141414;
-  --gc-surface-code: #2a2a2a;
-  --gc-border: #333;
-  --gc-border-subtle: #2a2a2a;
-  --gc-border-input: #444;
-  --gc-green: #22c55e;
-  --gc-green-dark: #166534;
-  --gc-green-light: #86efac;
-  --gc-green-muted: #6ee7b7;
-  --gc-green-bg: #052e16;
-  --gc-green-border: #166534;
-  --gc-link: #4ade80;
-  --gc-error-text: #f87171;
-  --gc-error-bg: #450a0a;
-  --gc-error-border: #991b1b;
+  /* GreenChain design tokens — light green-grey theme */
+  --gc-text: #1a1f1a;
+  --gc-text-muted: #5c6b5c;
+  --gc-text-dim: #8a9a8a;
+  --gc-text-soft: #374137;
+  --gc-text-heading: #111811;
+  --gc-surface: #ffffff;
+  --gc-surface-raised: #ffffff;
+  --gc-surface-alt: #f7faf7;
+  --gc-surface-code: #eef2ee;
+  --gc-border: #d8e0d8;
+  --gc-border-subtle: #eef2ee;
+  --gc-border-input: #c4d0c4;
+  --gc-green: #16a34a;
+  --gc-green-dark: #14532d;
+  --gc-green-light: #15803d;
+  --gc-green-muted: #22c55e;
+  --gc-green-bg: #f0fdf4;
+  --gc-green-border: #bbf7d0;
+  --gc-link: #16a34a;
+  --gc-error-text: #dc2626;
+  --gc-error-bg: #fef2f2;
+  --gc-error-border: #fecaca;
   --gc-font: system-ui, sans-serif;
   --gc-radius: 8px;
   --gc-radius-lg: 12px;
   --gc-radius-xl: 16px;
 
   /* Waste category colors */
-  --gc-cat-plastic: #3b82f6;
-  --gc-cat-paper: #f59e0b;
-  --gc-cat-metal: #6b7280;
-  --gc-cat-glass: #06b6d4;
-  --gc-cat-organic: #22c55e;
+  --gc-cat-plastic: #2563eb;
+  --gc-cat-paper: #d97706;
+  --gc-cat-metal: #4b5563;
+  --gc-cat-glass: #0891b2;
+  --gc-cat-organic: #16a34a;
 }
 
 html,
@@ -64,7 +64,7 @@ a {
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* ── Layout ─────────────────────────────────────────────────────────────── */
@@ -337,26 +337,81 @@ html {
 /* ── Navigation ───────────────────────────────────────────────────────────── */
 
 .nav {
-  padding: 16px 32px;
-  border-bottom: 1px solid var(--gc-border-input);
+  padding: 10px 24px;
+  background: var(--gc-surface-raised);
+  border-bottom: 2px solid var(--gc-green-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   display: flex;
-  gap: 24px;
-  font-size: 15px;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
 }
 
+/* ── Default link ── */
 .nav-link {
   color: var(--gc-text-muted);
   text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s ease;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .nav-link:hover {
-  color: var(--gc-green-light);
+  background: var(--gc-green-bg);
+  color: var(--gc-green);
 }
 
 .nav-link--active {
+  background: var(--gc-green-bg);
   color: var(--gc-green);
+  font-weight: 600;
+}
+
+/* ── Governance link (indigo tint) ── */
+.nav-link--governance {
+  color: #4338ca;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-link--governance:hover {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.nav-link--governance-active {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+  font-weight: 600;
+}
+
+/* ── Admin link (red, pushed to the far right) ── */
+.nav-link--admin {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-link--admin:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.nav-link--admin-active {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #f87171;
 }
 
 .footer {
@@ -367,4 +422,6 @@ html {
   border-top: 1px solid var(--gc-border-subtle);
   margin-top: 60px;
 }
+
+
 
