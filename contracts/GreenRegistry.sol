@@ -36,7 +36,7 @@ contract GreenRegistry is Ownable {
 
     uint256 public discardCount;
     IGreenSBT public sbtContract;
-
+    address public governanceContract;
     // ─── Events ──────────────────────────────────────────────────────────────
 
     event DiscardRegistered(
@@ -70,17 +70,32 @@ contract GreenRegistry is Ownable {
         sbtContract = IGreenSBT(_sbtContract);
     }
 
-    /// @notice Authorize an operator address to register discards
-    function addOperator(address _operator) external onlyOwner {
+
+    /// @notice Set the governance contract address
+    function setGovernanceContract(address _governance) external onlyOwner {
+        governanceContract = _governance;
+    }
+
+    /// @notice Authorize an operator — callable by owner or governance contract
+    function addOperator(address _operator) external {
+        require(
+          msg.sender == owner() || msg.sender == governanceContract,
+          "GreenRegistry: caller is not owner or governance"
+        );
         operators[_operator] = true;
         emit OperatorAdded(_operator);
     }
 
-    /// @notice Remove an operator's authorization
-    function removeOperator(address _operator) external onlyOwner {
+    /// @notice Remove an operator — callable by owner or governance contract
+    function removeOperator(address _operator) external {
+        require(
+          msg.sender == owner() || msg.sender == governanceContract,
+         "GreenRegistry: caller is not owner or governance"
+        );
         operators[_operator] = false;
         emit OperatorRemoved(_operator);
     }
+
 
     // ─── Core functions ──────────────────────────────────────────────────────
 
