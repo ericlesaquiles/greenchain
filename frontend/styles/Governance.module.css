@@ -1,0 +1,550 @@
+/* ── Shared layout ─────────────────────────────────────────────────────────── */
+
+.container {
+  max-width: 720px;
+  margin: 60px auto;
+  padding: 0 24px 80px;
+}
+
+.containerNarrow {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 0 24px 80px;
+}
+
+/* ── Page header ───────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--gc-text-muted);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ── Propose button (link) ─────────────────────────────────────────────────── */
+
+.proposeBtn {
+  padding: 10px 18px;
+  background: var(--gc-green);
+  color: white;
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Voter status bar ──────────────────────────────────────────────────────── */
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  background: var(--gc-surface);
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.statusItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.statusLabel {
+  font-size: 12px;
+  color: var(--gc-text-dim);
+}
+
+.statusValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gc-text);
+}
+
+.statusValueGreen { color: var(--gc-green-light); }
+.statusValueRed   { color: var(--gc-error-text); }
+
+.statusDivider {
+  width: 1px;
+  height: 32px;
+  background: var(--gc-border);
+  flex-shrink: 0;
+}
+
+/* ── Opt-in / opt-out buttons ──────────────────────────────────────────────── */
+
+.optBtn {
+  padding: 8px 14px;
+  background: var(--gc-green);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.optOutBtn {
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--gc-error-text);
+  border: 1px solid var(--gc-error-border);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── Connect box ───────────────────────────────────────────────────────────── */
+
+.connectBox {
+  background: var(--gc-surface);
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+/* ── Tabs ──────────────────────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: var(--gc-surface);
+  color: var(--gc-text-muted);
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabActive {
+  composes: tab;
+  background: var(--gc-green-bg);
+  color: var(--gc-green-light);
+  border-color: var(--gc-green-border);
+  font-weight: 600;
+}
+
+.tabCount {
+  background: var(--gc-surface-code);
+  color: var(--gc-text-dim);
+  border-radius: 20px;
+  padding: 1px 8px;
+  font-size: 12px;
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────────── */
+
+.emptyBox {
+  background: var(--gc-surface);
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius-lg);
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.emptyText {
+  font-size: 16px;
+  color: var(--gc-text-dim);
+  margin: 0;
+}
+
+/* ── Proposal card list ────────────────────────────────────────────────────── */
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--gc-surface);
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius-lg);
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--gc-border-subtle);
+  background: var(--gc-surface-raised);
+}
+
+.cardHeaderLeft {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.stateBadge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.typeBadge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.proposalId {
+  font-size: 13px;
+  color: #555;
+}
+
+.cardBody {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gc-text);
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: var(--gc-text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Target address box ────────────────────────────────────────────────────── */
+
+.targetBox {
+  background: var(--gc-surface-raised);
+  border: 1px solid var(--gc-border-subtle);
+  border-radius: var(--gc-radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.targetLabel {
+  font-size: 12px;
+  color: var(--gc-text-dim);
+}
+
+.targetAddress {
+  font-size: 13px;
+  color: var(--gc-text);
+  word-break: break-all;
+}
+
+.targetOrg {
+  font-size: 13px;
+  color: var(--gc-green-light);
+}
+
+/* ── Card meta ─────────────────────────────────────────────────────────────── */
+
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metaItem {
+  font-size: 12px;
+  color: #666;
+}
+
+/* ── Vote bar ──────────────────────────────────────────────────────────────── */
+
+.voteSection {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gc-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.voteBar {
+  height: 8px;
+  background: var(--gc-border-subtle);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.voteBarYes {
+  height: 100%;
+  background: var(--gc-green);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  min-width: 4px;
+}
+
+.voteNumbers {
+  display: flex;
+  justify-content: space-between;
+}
+
+.voteYes { font-size: 12px; color: var(--gc-green-light); }
+.voteNo  { font-size: 12px; color: var(--gc-error-text); }
+
+/* ── Vote / action buttons ─────────────────────────────────────────────────── */
+
+.voteActions {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gc-border-subtle);
+  display: flex;
+  gap: 10px;
+}
+
+.voteBtnYes {
+  flex: 1;
+  padding: 10px;
+  background: var(--gc-green-bg);
+  color: var(--gc-green-light);
+  border: 1px solid var(--gc-green-border);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.voteBtnNo {
+  flex: 1;
+  padding: 10px;
+  background: var(--gc-error-bg);
+  color: #fca5a5;
+  border: 1px solid var(--gc-error-border);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.voteBtnDisabled {
+  flex: 1;
+  padding: 10px;
+  background: var(--gc-surface);
+  color: #555;
+  border: 1px solid var(--gc-border);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  cursor: not-allowed;
+}
+
+.executeBtn {
+  flex: 1;
+  padding: 10px;
+  background: #1e3a5f;
+  color: #93c5fd;
+  border: 1px solid #1d4ed8;
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Card footer ───────────────────────────────────────────────────────────── */
+
+.cardFooter {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gc-border-subtle);
+  background: var(--gc-surface-raised);
+}
+
+/* ── Refresh button ────────────────────────────────────────────────────────── */
+
+.refreshBtn {
+  margin-top: 24px;
+  padding: 10px 20px;
+  background: var(--gc-surface);
+  color: var(--gc-text-muted);
+  border: 1px solid var(--gc-border-input);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ── Propose form ──────────────────────────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gc-text-soft);
+}
+
+.hint {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--gc-border-input);
+  border-radius: var(--gc-radius);
+  font-size: 15px;
+  outline: none;
+  background: var(--gc-surface);
+  color: var(--gc-text);
+  resize: vertical;
+  font-family: var(--gc-font);
+  line-height: 1.6;
+}
+
+/* ── Toggle button rows (proposal type / action) ───────────────────────────── */
+
+.typeRow {
+  display: flex;
+  gap: 10px;
+}
+
+.typeBtn {
+  padding: 10px 20px;
+  background: var(--gc-surface);
+  color: var(--gc-text-muted);
+  border: 1px solid var(--gc-border-input);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.typeActive {
+  padding: 10px 20px;
+  background: var(--gc-green-bg);
+  color: var(--gc-green-light);
+  border: 1px solid var(--gc-green-border);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.typeActiveRed {
+  padding: 10px 20px;
+  background: var(--gc-error-bg);
+  color: #fca5a5;
+  border: 1px solid var(--gc-error-border);
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Generic action buttons ────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--gc-green);
+  color: white;
+  border: none;
+  border-radius: var(--gc-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btnFull {
+  padding: 12px;
+  background: var(--gc-green);
+  color: white;
+  border: none;
+  border-radius: var(--gc-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.btnDisabled {
+  padding: 12px;
+  background: var(--gc-green-dark);
+  color: var(--gc-green-light);
+  border: none;
+  border-radius: var(--gc-radius);
+  font-size: 16px;
+  cursor: not-allowed;
+  width: 100%;
+}
+
+/* ── Success box ───────────────────────────────────────────────────────────── */
+
+.successBox {
+  background: var(--gc-green-bg);
+  border: 1px solid var(--gc-green-border);
+  border-radius: var(--gc-radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.successText {
+  font-size: 15px;
+  color: var(--gc-green-light);
+  margin: 0;
+}
+
+.successButtons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
