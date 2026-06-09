@@ -1,8 +1,3 @@
-## Phase 5 — README
-
-Create `README.md` in the project root:
-
-```markdown
 # GreenChain
 
 > Verified recycling actions, permanently recorded on the blockchain.
@@ -30,6 +25,7 @@ GreenChain introduces a shared, tamper-proof record layer using Ethereum smart c
 - **Operators** (cooperatives, collection points) register discard actions on-chain with photographic evidence
 - **Citizens** automatically receive a Soulbound Token as a non-transferable certificate of participation
 - **Anyone** can audit the full history of actions via the public dashboard, with every record linking back to its Etherscan transaction and IPFS evidence
+- **Governance** is decentralized — operators vote on-chain to add or remove members and propose rule changes
 
 ---
 
@@ -42,35 +38,41 @@ GreenChain introduces a shared, tamper-proof record layer using Ethereum smart c
 - Estimated weight (kg)
 - IPFS CID of the evidence metadata
 - Timestamp
+- Governance proposals and votes
 
 ### What goes off-chain (IPFS via Pinata)
 - Evidence photo
 - Full metadata JSON: citizen, operator, category, weight, location, photo CID, timestamp
+- Governance proposal full text: title, description, organization, contact info
 
 ### Why this split
 Storing large files on-chain is prohibitively expensive. The CID stored on-chain is a cryptographic hash of the off-chain content — if anyone tampers with the IPFS file, the CID no longer matches, making tampering detectable.
 
 ### Contracts
+
 | Contract | Address | Etherscan |
 |---|---|---|
-| GreenRegistry | `0x7832Eee24EB47af4347825231FE6135d9fe29815` | [View](https://sepolia.etherscan.io/address/0x7832Eee24EB47af4347825231FE6135d9fe29815#code) |
-| GreenSBT | `0xA55Dbd05D330018E2B600236031Fb5b46758c27c` | [View](https://sepolia.etherscan.io/address/0xA55Dbd05D330018E2B600236031Fb5b46758c27c#code) |
+| GreenRegistry | `0x23ADABf4F0474F81fFfd111A432BEc7244bc11df` | [View](https://sepolia.etherscan.io/address/0x23ADABf4F0474F81fFfd111A432BEc7244bc11df#code) |
+| GreenSBT | `0x1c60499FE6531642e4d363423faE51594F447180` | [View](https://sepolia.etherscan.io/address/0x1c60499FE6531642e4d363423faE51594F447180#code) |
+| GreenGovernance | `0xc9c1987DaaF70C63845413AC095dF8f7D2326308` | [View](https://sepolia.etherscan.io/address/0xc9c1987DaaF70C63845413AC095dF8f7D2326308#code) |
 
-Both contracts are verified and open-source on Etherscan Sepolia.
+All contracts are verified and open-source on Etherscan Sepolia.
 
 ### Tech stack
+
 | Layer | Technology |
 |---|---|
 | Smart contracts | Solidity 0.8.20 + OpenZeppelin 4.9.6 |
 | Contract tooling | Hardhat 2 + hardhat-toolbox |
 | Soulbound tokens | ERC-721 + ERC-5192 |
+| Governance | Custom DAO with timelock |
 | Evidence storage | IPFS via Pinata |
 | Frontend | Next.js + Ethers.js v6 |
 | Network | Ethereum Sepolia Testnet |
 
 ---
 
-## Flow
+## Core flow
 
 ```
 Citizen presents wallet address at collection point
@@ -85,7 +87,26 @@ Action stored on-chain (operator, citizen, category, weight, CID, timestamp)
         ↓
 GreenSBT.mint() called automatically → SBT issued to citizen wallet
         ↓
-DiscardRegistered event emitted → visible on dashboard
+DiscardRegistered event emitted → visible on public dashboard
+```
+
+## Governance flow
+
+```
+Operator submits membership or management proposal
+        ↓
+Proposal metadata uploaded to IPFS → CID stored on-chain
+        ↓
+Voting window opens (5 minutes on testnet)
+        ↓
+Registered voters cast Yes or No votes on-chain
+        ↓
+Voting window closes → proposal state updated (Passed or Rejected)
+        ↓
+Timelock expires (1 minute on testnet)
+        ↓
+Anyone calls executeProposal() → operator added/removed automatically
+OR owner calls acknowledgeManagementProposal() → decision recorded on-chain
 ```
 
 ---
@@ -99,7 +120,7 @@ Key functions:
 - `registerDiscard(citizen, category, weightKg, ipfsCid)` — registers an action and triggers SBT mint. Only callable by authorized operators.
 - `getDiscard(id)` — returns full details of a discard action by ID
 - `getDiscardsByCitizen(address)` — returns all discard IDs for a given citizen
-- `addOperator(address)` / `removeOperator(address)` — operator management, owner only
+- `addOperator(address)` / `removeOperator(address)` — callable by owner or governance contract
 
 ### GreenSBT.sol
 ERC-721 token with ERC-5192 soulbound implementation. Tokens are permanently non-transferable.
@@ -110,12 +131,28 @@ Key functions:
 - `getTokensByCitizen(address)` — returns all token IDs for a citizen
 - `transferFrom` / `safeTransferFrom` / `approve` — all revert with explicit soulbound error
 
+### GreenGovernance.sol
+On-chain DAO for operator management and rule proposals.
+
+Key functions:
+- `submitMembershipProposal(target, isAddition, ipfsCid)` — propose adding or removing an operator
+- `submitManagementProposal(ipfsCid)` — propose a rule or process change
+- `castVote(proposalId, support)` — cast a yes or no vote
+- `executeProposal(proposalId)` — execute a passed membership proposal after timelock
+- `acknowledgeManagementProposal(proposalId)` — owner acknowledges a passed management proposal
+- `optInToGovernance()` / `optOutOfGovernance()` — manage voter participation
+
+Governance parameters (testnet):
+- Voting duration: 5 minutes
+- Timelock: 1 minute
+- Quorum: min(2, active voter count) yes votes required
+
 ---
 
 ## How to run locally
 
 ### Prerequisites
-- Node.js 18 or 20 (note: Node 25 works but generates warnings with Hardhat 2)
+- Node.js 18 or 20
 - MetaMask browser extension
 - Sepolia testnet ETH (available from [sepoliafaucet.com](https://sepoliafaucet.com))
 
@@ -143,7 +180,7 @@ ETHERSCAN_API_KEY=your-etherscan-api-key
 npx hardhat test
 ```
 
-All 12 tests should pass.
+All 19 tests should pass.
 
 ### 5. Install frontend dependencies
 ```bash
@@ -157,6 +194,7 @@ Create `frontend/.env.local`:
 PINATA_JWT=your-pinata-jwt
 NEXT_PUBLIC_PINATA_GATEWAY=https://gateway.pinata.cloud
 NEXT_PUBLIC_SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/your-alchemy-key
+GEMINI_API_KEY=your-gemini-api-key
 ```
 
 ### 7. Run the frontend
@@ -173,9 +211,13 @@ Open [http://localhost:3000](http://localhost:3000).
 | Page | URL | Description |
 |---|---|---|
 | Home | `/` | Landing page with project overview |
-| Register | `/register` | Operator registers a discard action |
+| Register | `/register` | Operator registers a discard action with AI photo validation |
 | My Certificates | `/certificates` | Citizen views their recycling history and SBTs |
+| Certificate | `/certificate/[tokenId]` | Public shareable certificate page |
 | Dashboard | `/dashboard` | Public audit log with metrics and search |
+| Governance | `/governance` | DAO voting on membership and management proposals |
+| Propose | `/governance/propose` | Submit a governance proposal |
+| Admin | `/admin` | Contract owner manages operators directly |
 
 ---
 
@@ -185,7 +227,7 @@ Every action registered on GreenChain can be independently verified by anyone:
 
 1. Find the action on the [dashboard](http://localhost:3000/dashboard)
 2. Click "Etherscan →" to see the on-chain transaction
-3. Open the "Logs" tab on Etherscan to see the `DiscardRegistered` event and all indexed fields
+3. Open the "Logs" tab on Etherscan to see the `DiscardRegistered` event
 4. Copy the `ipfsCid` from the event data
 5. Open `https://gateway.pinata.cloud/ipfs/<cid>` to see the full metadata JSON
 6. Copy `photo.cid` from the JSON
@@ -195,27 +237,18 @@ This chain — **transaction → event → metadata CID → photo CID** — is t
 
 ---
 
-## Example audit
-
-| Field | Value |
-|---|---|
-| Contract | `0x7832Eee24EB47af4347825231FE6135d9fe29815` |
-| Network | Ethereum Sepolia Testnet |
-| Etherscan | [View contract](https://sepolia.etherscan.io/address/0x7832Eee24EB47af4347825231FE6135d9fe29815) |
-
----
-
 ## Project structure
 
 ```
 greenchain/
 ├── contracts/
 │   ├── GreenRegistry.sol     ← core registry contract
-│   └── GreenSBT.sol          ← soulbound token contract
+│   ├── GreenSBT.sol          ← soulbound token contract
+│   └── GreenGovernance.sol   ← DAO governance contract
 ├── scripts/
 │   └── deploy.cjs            ← deployment script
 ├── test/
-│   └── GreenChain.cjs        ← 12 unit tests
+│   └── GreenChain.cjs        ← 19 unit tests
 ├── hardhat.config.cjs
 ├── frontend/
 │   ├── lib/
@@ -223,14 +256,23 @@ greenchain/
 │   │   ├── useWallet.js      ← MetaMask connection hook
 │   │   ├── pinata.js         ← Pinata client
 │   │   ├── uploadEvidence.js ← server-side upload logic
-│   │   └── uploadClient.js   ← browser-side upload helper
+│   │   ├── uploadClient.js   ← browser-side upload helper
+│   │   └── validateImage.js  ← AI image validation helper
 │   ├── pages/
 │   │   ├── index.js          ← landing page
 │   │   ├── register.js       ← operator registration screen
 │   │   ├── certificates.js   ← citizen wallet screen
 │   │   ├── dashboard.js      ← public dashboard
+│   │   ├── admin.js          ← owner admin panel
+│   │   ├── certificate/
+│   │   │   └── [tokenId].js  ← shareable certificate page
+│   │   ├── governance/
+│   │   │   ├── index.js      ← governance voting page
+│   │   │   └── propose.js    ← proposal submission page
 │   │   └── api/
-│   │       └── upload.js     ← IPFS upload API route
+│   │       ├── upload.js         ← evidence IPFS upload
+│   │       ├── upload-proposal.js ← proposal IPFS upload
+│   │       └── validate-image.js  ← AI image validation
 │   └── styles/
 └── README.md
 ```
@@ -246,12 +288,6 @@ Per the challenge scope, the following are intentionally out of scope for this M
 - Production deployment
 - Integration with public registries or government databases
 - Professional smart contract audit
-
----
-
-## Team
-
-Built for the ImpactLedger challenge at Hackweb 2025.
 
 ---
 
