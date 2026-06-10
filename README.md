@@ -291,7 +291,13 @@ Per the challenge scope, the following are intentionally out of scope for this M
 
 ---
 
+## AI use
+
+This project made use of the AI tools Claude, Cursor and AntiGravity to aid in the coding tasks, as well as Google Gemini for helping with the pitch and presentation.
+The entire process was directed by a human in a step-by-step basis, who only used the AI tools as a help to reach the desired quality with the available amount of time.
+
+---
+
 ## License
 
 MIT
-```
