@@ -2,7 +2,7 @@ export const REGISTRY_ADDRESS = "0x23ADABf4F0474F81fFfd111A432BEc7244bc11df";
 export const SBT_ADDRESS = "0x1c60499FE6531642e4d363423faE51594F447180";
 export const GOVERNANCE_ADDRESS = "0xc9c1987DaaF70C63845413AC095dF8f7D2326308";
 
-export const DEPLOY_BLOCK = 0; // replace with the block number from Etherscan
+export const DEPLOY_BLOCK = 11019117; // GreenRegistry creation block on Sepolia
 
 export const REGISTRY_ABI = [
   "function registerDiscard(address citizen, uint8 category, uint16 weightKg, string calldata ipfsCid) external returns (uint256)",

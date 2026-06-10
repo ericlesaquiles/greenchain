@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import { REGISTRY_ADDRESS, REGISTRY_ABI, WASTE_CATEGORIES, DEPLOY_BLOCK } from "../lib/contracts";
+import { WASTE_CATEGORIES } from "../lib/contracts";
+import { queryDiscardRegisteredEvents } from "../lib/queryRegistryEvents";
 import styles from "../styles/Dashboard.module.css";
 
 const SEPOLIA_RPC = process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL;
@@ -35,46 +35,17 @@ export default function Dashboard() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const provider = new ethers.JsonRpcProvider(SEPOLIA_RPC);
-      const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
+      const discards = await queryDiscardRegisteredEvents(SEPOLIA_RPC);
 
-      const latestBlock = await provider.getBlockNumber();
-      const filter = registry.filters.DiscardRegistered();
-
-      let allEvents = [];
-      try {
-        // Try querying with large chunks (50k blocks) on the primary RPC
-        const CHUNK_SIZE = 50000;
-        for (let from = DEPLOY_BLOCK; from <= latestBlock; from += CHUNK_SIZE) {
-          const to = Math.min(from + CHUNK_SIZE - 1, latestBlock);
-          const events = await registry.queryFilter(filter, from, to);
-          allEvents = allEvents.concat(events);
-        }
-      } catch (rpcErr) {
-        console.warn("Primary RPC log query failed, trying public fallback RPC:", rpcErr.message);
-
-        // Fallback to a public Sepolia node which permits up to 50k block range requests
-        const fallbackProvider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com");
-        const fallbackRegistry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, fallbackProvider);
-
-        allEvents = [];
-        const CHUNK_SIZE = 50000;
-        for (let from = DEPLOY_BLOCK; from <= latestBlock; from += CHUNK_SIZE) {
-          const to = Math.min(from + CHUNK_SIZE - 1, latestBlock);
-          const events = await fallbackRegistry.queryFilter(filter, from, to);
-          allEvents = allEvents.concat(events);
-        }
-      }
-
-      const parsed = allEvents.map((e) => ({
-        id: e.args.id.toString(),
-        operator: e.args.operator,
-        citizen: e.args.citizen,
-        category: WASTE_CATEGORIES[Number(e.args.category)]?.label ?? "Unknown",
-        weightKg: Number(e.args.weightKg),
-        ipfsCid: e.args.ipfsCid,
-        timestamp: Number(e.args.timestamp),
-        txHash: e.transactionHash,
+      const parsed = discards.map((d) => ({
+        id: d.id,
+        operator: d.operator,
+        citizen: d.citizen,
+        category: WASTE_CATEGORIES[d.category]?.label ?? "Unknown",
+        weightKg: d.weightKg,
+        ipfsCid: d.ipfsCid,
+        timestamp: d.timestamp,
+        txHash: d.txHash,
       }));
 
       // Sort most recent first
@@ -225,14 +196,18 @@ export default function Dashboard() {
                           </a>
                         </td>
                         <td className={styles.td}>
-                          <a
-                            className="link link--sm"
-                            href={`https://sepolia.etherscan.io/tx/${a.txHash}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Etherscan →
-                          </a>
+                          {a.txHash ? (
+                            <a
+                              className="link link--sm"
+                              href={`https://sepolia.etherscan.io/tx/${a.txHash}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Etherscan →
+                            </a>
+                          ) : (
+                            "—"
+                          )}
                         </td>
                       </tr>
                     ))}
